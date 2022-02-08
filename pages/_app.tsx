@@ -1,8 +1,41 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
+import App from 'next/app';
+import { SessionProvider, getSession } from 'next-auth/react';
+import { Session } from 'next-auth';
+import { createGlobalStyle } from 'styled-components';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+interface CustomProps {
+  session: Session;
 }
 
-export default MyApp
+function MyApp({ Component, pageProps, session }: AppProps & CustomProps) {
+  return (
+    <>
+      <GlobalStyle />
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </>
+  );
+}
+
+MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps & CustomProps> => {
+  const appProps = await App.getInitialProps(appContext);
+  const session = (await getSession(appContext.ctx)) as Session;
+  return { ...appProps, session };
+};
+
+export default MyApp;
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #282c34;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+`;
