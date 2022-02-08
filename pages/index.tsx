@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import styled from 'styled-components';
 
 const Home: NextPage = (props) => {
   const { data: session } = useSession();
@@ -27,13 +26,13 @@ const Home: NextPage = (props) => {
   }
 
   return (
-    <StyledDiv>
+    <div>
       {button}
       {userSession}
 
       <div>from getStaticProps: {(props as any).timestamp}</div>
       <div>client: {new Date().toISOString()}</div>
-    </StyledDiv>
+    </div>
   );
 };
 
@@ -47,11 +46,3 @@ export async function getStaticProps() {
 }
 
 export default Home;
-
-const StyledDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  font-size: 20px;
-`;
